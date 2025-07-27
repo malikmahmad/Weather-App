@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Weather App - Muhammad Ahmad</title>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      background: linear-gradient(to top, #a18cd1, #fbc2eb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: background 0.6s ease;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.2);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+      text-align: center;
+      width: 90%;
+      max-width: 450px;
+      color: #fff;
+    }
+
+    h1 {
+      margin-bottom: 20px;
+    }
+
+    input {
+      padding: 12px;
+      width: 65%;
+      border-radius: 10px;
+      border: none;
+      font-size: 16px;
+      margin-bottom: 15px;
+    }
+
+    button {
+      padding: 12px;
+      border: none;
+      background-color: #0077ff;
+      color: white;
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005ecb;
+    }
+
+    .weather-info {
+      margin-top: 20px;
+    }
+
+    .weather-info h2 {
+      margin: 10px 0;
+    }
+
+    .animation {
+      margin-top: 15px;
+    }
+
+    .footer {
+      margin-top: 20px;
+      font-size: 14px;
+      color: #eee;
+    }
+
+    .footer a {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 480px) {
+      input, button {
+        width: 100%;
+        margin: 5px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="weather-title">🌍 Weather Forecast</h1>
+    <input type="text" id="city" placeholder="Enter city..." />
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weather-info" class="weather-info"></div>
+    <div class="footer">
+      Developed by <a href="mailto:mahmad937ak@gmail.com" target="_blank">Muhammad Ahmad</a>
+    </div>
+  </div>
+
+  <script>
+const apiKey = '655baafd276e6398f553a60f7bc6c6a3';
+
+function getWeather() {
+  let city = document.getElementById("city").value.trim();
+  if (!city) {
+    city = "Lahore";
+  }
+
+  const weatherBox = document.getElementById("weather-info");
+  weatherBox.innerHTML = "<p>Loading...</p>";
+
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`)
+    .then((res) => res.json())
+    .then((data) => {
+      if (data.cod !== 200) {
+        weatherBox.innerHTML = `<p>City not found. Try again.</p>`;
+        return;
+      }
+
+      const weather = data.weather[0].main.toLowerCase();
+      const temperature = data.main.temp;
+      const cityName = data.name;
+      const bg = document.body.style;
+
+      let animation = "";
+      let title = "🌍 Weather Forecast";
+
+      switch (weather) {
+        case "clear":
+          animation = "https://assets9.lottiefiles.com/packages/lf20_tvj76jms.json";
+          bg.backgroundImage = "linear-gradient(to top, #fceabb, #f8b500)";
+          title = "☀️ Sunny Day";
+          break;
+        case "clouds":
+          animation = "https://assets9.lottiefiles.com/packages/lf20_jmBauI.json";
+          bg.backgroundImage = "linear-gradient(to top, #d7d2cc, #304352)";
+          title = "☁️ Cloudy Weather";
+          break;
+        case "rain":
+          animation = "https://assets2.lottiefiles.com/packages/lf20_xnbcztv8.json";
+          bg.backgroundImage = "linear-gradient(to top, #283e51, #485563)";
+          title = "🌧️ Rainy Weather";
+          break;
+        case "thunderstorm":
+          animation = "https://assets6.lottiefiles.com/packages/lf20_qwsmy1aa.json";
+          bg.backgroundImage = "linear-gradient(to top, #0f2027, #203a43, #2c5364)";
+          title = "⚡ Thunderstorm";
+          break;
+        case "snow":
+          animation = "https://assets2.lottiefiles.com/packages/lf20_NpVg9D.json";
+          bg.backgroundImage = "linear-gradient(to top, #e6dada, #274046)";
+          title = "❄️ Snowy Weather";
+          break;
+        case "mist":
+        case "fog":
+        case "haze":
+          animation = "https://assets6.lottiefiles.com/packages/lf20_jtbfg2nb.json";
+          bg.backgroundImage = "linear-gradient(to top, #3e5151, #decba4)";
+          title = "🌫️ Foggy Weather";
+          break;
+        case "drizzle":
+          animation = "https://assets7.lottiefiles.com/packages/lf20_Stdaec.json";
+          bg.backgroundImage = "linear-gradient(to top, #4b6cb7, #182848)";
+          title = "🌦️ Drizzle";
+          break;
+        case "wind":
+        case "tornado":
+        case "squall":
+          animation = "https://assets7.lottiefiles.com/private_files/lf30_qrvjndp4.json";
+          bg.backgroundImage = "linear-gradient(to top, #a1c4fd, #c2e9fb)";
+          title = "🌬️ Windy Weather";
+          break;
+        default:
+          animation = "https://assets9.lottiefiles.com/packages/lf20_jmBauI.json";
+          bg.backgroundImage = "linear-gradient(to top, #a1c4fd, #c2e9fb)";
+          title = "🌍 Weather Forecast";
+      }
+
+      document.getElementById("weather-title").innerText = title;
+
+      weatherBox.innerHTML = `
+        <h2>${cityName}</h2>
+        <p>Temperature: ${temperature}°C</p>
+        <p>Condition: ${weather.charAt(0).toUpperCase() + weather.slice(1)}</p>
+        <div class="animation">
+          <lottie-player src="${animation}" background="transparent" speed="1" style="width: 200px; height: 200px;" loop autoplay></lottie-player>
+        </div>
+      `;
+    })
+    .catch((error) => {
+      console.error("Error fetching weather:", error);
+      weatherBox.innerHTML = `<p>Something went wrong. Please try again.</p>`;
+    });
+}
+</script>
